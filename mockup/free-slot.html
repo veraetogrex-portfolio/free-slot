@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T48 Free Slot — one free hour for lunch with Dad</title>
+<link rel="stylesheet" href="_shared/nocturne.css">
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* the whole app screen from ../, in Nocturne type; no grid on the app screen */
+  #stage{background:#07080C}
+  #stage .fs{position:absolute;left:0;top:0;--font:var(--f-text)}
+  body.autoplay #stage :focus-visible{outline:none}
+  body.autoplay #li-cursor{transition:none}   /* visible from frame one, no fade at the loop seam */
+  #li-cursor svg{transform:scale(1.5);transform-origin:4px 3px}   /* the hand stays readable in a phone-sized reel */
+  #li-cursor.down svg{transform:scale(1.3)}
+</style>
+</head>
+<body>
+<div id="stage" data-title="T48 Free Slot" data-url="veraetogrex-portfolio.github.io/free-slot">
+  <section class="fs" aria-label="VECTOR Calendar" data-assets="../assets/"></section>
+</div>
+<script src="_shared/stage.js"></script>
+<script src="../script.js"></script>
+<script>
+const app = document.querySelector('.fs').slotApp;
+const at = sel => { const r = Stage.rect(document.querySelector(sel)); return [r.cx, r.cy]; };
+const REST = [1180, 560];
+// one act: the week → Find a time, five free windows for 30 min → "1 h": one window is left → it becomes the lunch
+Stage.init({
+  reset: () => app.reset(),
+  cursorStart: REST,
+  async demo(s) {
+    const t0 = performance.now();
+    await s.until(t0, 950);                           // the whole week at rest first
+    const [fx, fy] = at('[data-find]');
+    await s.move([fx + 74, fy + 6], 600);             // Find a time on the draft "Lunch with Dad", right of the label
+    await s.until(t0, 1700);
+    await s.click(null, { hold: 110 });               // → Thursday on two lanes, 30 min: five dashed free windows
+    await s.until(t0, 3350);
+    const [dx, dy] = at('[data-dur="60"]');
+    await s.move([dx + 15, dy + 13], 650);            // the lower right corner of "1 h": the hand hangs below the label
+    await s.until(t0, 4250);
+    await s.click(null, { hold: 120 });               // 1 h: four short windows go hatched one after another, 12:30 – 1:30 PM fills the fifth
+    await s.until(t0, 6600);                          // the camera pushes in on the 12:30 window and holds it 1.5 s
+    const [ax, ay] = at('[data-add]');
+    await s.move([ax + 84, ay + 12], 700);             // the right end of the button: the hand stays off "Add 12:30 – 1:30 PM"
+    await s.until(t0, 7500);
+    await s.click(null, { hold: 120 });               // Add: "Added to Thursday" close up, then the camera holds the new "Lunch with Dad" 1.6 s, goes back to the whole screen and stops
+    await s.until(t0, 11300);
+  },
+});
+</script>
+</body>
+</html>
